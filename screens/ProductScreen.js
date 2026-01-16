@@ -77,9 +77,6 @@ const ProductScreen = ({ addToCart, navigateToHome, navigateToCart, cartCount, s
                       </Text>
                     </View>
                   </View>
-                  <View style={styles.favoriteButton}>
-                    <Text style={styles.favoriteText}>♡</Text>
-                  </View>
                 </View>
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{product.name}</Text>
@@ -236,29 +233,6 @@ const styles = StyleSheet.create({
   },
   imagePatternText: {
     fontSize: 48,
-  },
-  favoriteButton: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  favoriteText: {
-    fontSize: 16,
-    color: '#666666',
   },
   productInfo: {
     marginBottom: 8,

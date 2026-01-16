@@ -72,6 +72,11 @@ export default function App() {
     return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
   };
 
+  // Clear cart function
+  const clearCart = () => {
+    setCart([]);
+  };
+
   // Render current screen based on state
   const renderScreen = () => {
     switch (currentScreen) {
@@ -101,6 +106,7 @@ export default function App() {
           <CartScreen
             cart={cart}
             updateCartQuantity={updateCartQuantity}
+            clearCart={clearCart}
             navigateToHome={navigateToHome}
             navigateToProducts={navigateToProducts}
           />

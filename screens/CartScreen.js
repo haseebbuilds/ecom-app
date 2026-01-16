@@ -4,9 +4,10 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 
-const CartScreen = ({ cart, updateCartQuantity, navigateToHome, navigateToProducts }) => {
+const CartScreen = ({ cart, updateCartQuantity, clearCart, navigateToHome, navigateToProducts }) => {
   const calculateSubtotal = () => {
     return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
@@ -104,7 +105,20 @@ const CartScreen = ({ cart, updateCartQuantity, navigateToHome, navigateToProduc
             </View>
             
             <View style={styles.checkoutButtonContainer}>
-              <Text style={styles.checkoutButton} onPress={() => {}}>
+              <Text style={styles.checkoutButton} onPress={() => {
+                Alert.alert(
+                  'Order Placed',
+                  'Your order is placed',
+                  [
+                    {
+                      text: 'OK',
+                      onPress: () => {
+                        clearCart();
+                      }
+                    }
+                  ]
+                );
+              }}>
                 Check Out
               </Text>
             </View>

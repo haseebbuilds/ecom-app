@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const BANNER_WIDTH = SCREEN_WIDTH; // Full width for proper paging
 
 const HomeScreen = ({ navigateToProducts, navigateToCart, navigateToAbout, cartCount }) => {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -28,7 +29,7 @@ const HomeScreen = ({ navigateToProducts, navigateToCart, navigateToAbout, cartC
         const nextIndex = (prev + 1) % banners.length;
         if (bannerScrollRef.current) {
           bannerScrollRef.current.scrollTo({
-            x: nextIndex * (SCREEN_WIDTH - 40),
+            x: nextIndex * BANNER_WIDTH,
             animated: true,
           });
         }
@@ -45,12 +46,19 @@ const HomeScreen = ({ navigateToProducts, navigateToCart, navigateToAbout, cartC
   };
 
   const handleBannerScroll = (event) => {
-    const index = Math.round(event.nativeEvent.contentOffset.x / (SCREEN_WIDTH - 40));
-    setCurrentBannerIndex(index);
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / BANNER_WIDTH);
+    if (index !== currentBannerIndex && index >= 0 && index < banners.length) {
+      setCurrentBannerIndex(index);
+    }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <View>
@@ -81,23 +89,30 @@ const HomeScreen = ({ navigateToProducts, navigateToCart, navigateToAbout, cartC
           />
         </View>
         
-        <View style={styles.banner}>
+        <View style={styles.bannerContainer}>
           <ScrollView
             ref={bannerScrollRef}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             onMomentumScrollEnd={handleBannerScroll}
+            onScroll={handleBannerScroll}
+            scrollEventThrottle={16}
+            decelerationRate="fast"
+            snapToInterval={BANNER_WIDTH}
+            snapToAlignment="start"
             style={styles.bannerScroll}
           >
             {banners.map((banner, index) => (
-              <View key={index} style={[styles.bannerContent, { width: SCREEN_WIDTH - 40 }]}>
-                <View style={styles.bannerTextContainer}>
-                  <Text style={styles.bannerTitle}>{banner.title}</Text>
-                  <Text style={styles.bannerDiscount}>{banner.discount}</Text>
-                  <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
+              <View key={index} style={[styles.bannerContent, { width: BANNER_WIDTH }]}>
+                <View style={styles.bannerInnerContent}>
+                  <View style={styles.bannerTextContainer}>
+                    <Text style={styles.bannerTitle}>{banner.title}</Text>
+                    <Text style={styles.bannerDiscount}>{banner.discount}</Text>
+                    <Text style={styles.bannerSubtitle}>{banner.subtitle}</Text>
+                  </View>
+                  <View style={styles.bannerImagePlaceholder} />
                 </View>
-                <View style={styles.bannerImagePlaceholder} />
               </View>
             ))}
           </ScrollView>
@@ -120,42 +135,49 @@ const HomeScreen = ({ navigateToProducts, navigateToCart, navigateToAbout, cartC
             <Text style={styles.seeAll} onPress={() => navigateToProducts('')}>See All</Text>
           </View>
           
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            style={styles.horizontalScroll}
-            contentContainerStyle={styles.horizontalScrollContent}
-          >
-            <View style={styles.categoryCard}>
-              <View style={styles.categoryImagePlaceholder}>
-                <View style={styles.imagePattern}>
-                  <Text style={styles.imagePatternText}>📱</Text>
+          <View style={styles.featuredCardsContainer}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              contentContainerStyle={styles.horizontalScrollContent}
+            >
+              <View style={styles.categoryCard}>
+                <View style={styles.categoryImagePlaceholder}>
+                  <View style={styles.imagePattern}>
+                    <Text style={styles.imagePatternText}>📱</Text>
+                  </View>
+                </View>
+                <View style={styles.categoryCardContent}>
+                  <Text style={styles.categoryName}>Electronics</Text>
+                  <Text style={styles.categoryPrice}>From $99</Text>
                 </View>
               </View>
-              <Text style={styles.categoryName}>Electronics</Text>
-              <Text style={styles.categoryPrice}>From $99</Text>
-            </View>
-            
-            <View style={styles.categoryCard}>
-              <View style={styles.categoryImagePlaceholder}>
-                <View style={styles.imagePattern}>
-                  <Text style={styles.imagePatternText}>📲</Text>
+              
+              <View style={styles.categoryCard}>
+                <View style={styles.categoryImagePlaceholder}>
+                  <View style={styles.imagePattern}>
+                    <Text style={styles.imagePatternText}>📲</Text>
+                  </View>
+                </View>
+                <View style={styles.categoryCardContent}>
+                  <Text style={styles.categoryName}>Mobiles</Text>
+                  <Text style={styles.categoryPrice}>From $199</Text>
                 </View>
               </View>
-              <Text style={styles.categoryName}>Mobiles</Text>
-              <Text style={styles.categoryPrice}>From $199</Text>
-            </View>
-            
-            <View style={styles.categoryCard}>
-              <View style={styles.categoryImagePlaceholder}>
-                <View style={styles.imagePattern}>
-                  <Text style={styles.imagePatternText}>🎧</Text>
+              
+              <View style={styles.categoryCard}>
+                <View style={styles.categoryImagePlaceholder}>
+                  <View style={styles.imagePattern}>
+                    <Text style={styles.imagePatternText}>🎧</Text>
+                  </View>
+                </View>
+                <View style={styles.categoryCardContent}>
+                  <Text style={styles.categoryName}>Accessories</Text>
+                  <Text style={styles.categoryPrice}>From $29</Text>
                 </View>
               </View>
-              <Text style={styles.categoryName}>Accessories</Text>
-              <Text style={styles.categoryPrice}>From $29</Text>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
         
         <View style={styles.navigationSection}>
@@ -183,8 +205,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 40,
+  },
   header: {
-    paddingTop: 50,
+    paddingTop: 10,
     paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: '#FFFFFF',
@@ -253,7 +279,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  banner: {
+  bannerContainer: {
     marginBottom: 30,
   },
   bannerScroll: {
@@ -261,24 +287,18 @@ const styles = StyleSheet.create({
   },
   bannerContent: {
     backgroundColor: '#6A4CE1',
-    borderRadius: 20,
-    padding: 24,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+  },
+  bannerInnerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginBottom: 12,
-    shadowColor: '#6A4CE1',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
+    paddingHorizontal: 4,
   },
   bannerTextContainer: {
     flex: 1,
+    paddingRight: 16,
   },
   bannerTitle: {
     fontSize: 18,
@@ -308,7 +328,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 16,
+    paddingHorizontal: 20,
   },
   paginationDot: {
     width: 8,
@@ -328,7 +349,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 22,
@@ -340,16 +361,20 @@ const styles = StyleSheet.create({
     color: '#6A4CE1',
     fontWeight: '600',
   },
-  horizontalScroll: {
+  featuredCardsContainer: {
     marginHorizontal: -20,
+    paddingHorizontal: 20,
+    paddingBottom: 4,
   },
   horizontalScrollContent: {
-    paddingHorizontal: 20,
+    paddingRight: 20,
+    paddingBottom: 4,
   },
   categoryCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 16,
+    padding: 20,
+    paddingBottom: 24,
     marginRight: 16,
     width: 160,
     shadowColor: '#000',
@@ -366,7 +391,7 @@ const styles = StyleSheet.create({
     height: 120,
     backgroundColor: '#F0F0F0',
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -381,11 +406,14 @@ const styles = StyleSheet.create({
   imagePatternText: {
     fontSize: 48,
   },
+  categoryCardContent: {
+    paddingTop: 4,
+  },
   categoryName: {
     fontSize: 16,
     color: '#000000',
     fontWeight: '600',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   categoryPrice: {
     fontSize: 14,
@@ -394,6 +422,7 @@ const styles = StyleSheet.create({
   },
   navigationSection: {
     marginTop: 10,
+    paddingTop: 10,
   },
   navigationTitle: {
     fontSize: 22,
