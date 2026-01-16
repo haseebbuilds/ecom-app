@@ -20,13 +20,14 @@ const ProductScreen = ({ addToCart, navigateToHome, navigateToCart, cartCount, s
     { id: 8, name: 'Phone Case Premium', price: 39.99, category: 'Accessories' },
   ]);
 
-  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery || '');
 
   // Filter products based on search
-  const products = allProducts.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const products = allProducts.filter(product => {
+    const query = (searchQuery || '').toLowerCase();
+    return product.name.toLowerCase().includes(query) ||
+           product.category.toLowerCase().includes(query);
+  });
 
   const handleAddToCart = (product) => {
     addToCart(product);
