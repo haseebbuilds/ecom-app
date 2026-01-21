@@ -5,71 +5,65 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 
 const LoginScreen = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
+  const [error, setError] = useState('');
 
   const handleLogin = () => {
-  if (!email.trim()) {
-    alert('Email is required');
-    return;
-  }
+    // Empty fields check
+    if (email.trim() === '' || password.trim() === '') {
+      setError('Email && password are required');
+      return;
+    }
 
-  if (!isValidEmail(email)) {
-    alert('Please enter a valid email address');
-    return;
-  }
+    // Email validation
+    if (!email.includes('@gmail.com')) {
+      setError('Please enter valid email');
+      return;
+    }
 
-  if (!password.trim()) {
-    alert('Password is required');
-    return;
-  }
-
-  onLogin();
-};
-
+    // Clear error & login
+    setError('');
+    onLogin();
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Sarim Electronics</Text>
         <Text style={styles.subtitle}>Welcome Back</Text>
-        
+
         <View style={styles.form}>
           <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your email"
-            placeholderTextColor="#999999"
-            name="email"
+            placeholderTextColor="#999"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          
+
           <Text style={styles.label}>Password</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your password"
-            placeholderTextColor="#999999"
+            placeholderTextColor="#999"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
-          
-          <View style={styles.buttonContainer}>
-            <Text style={styles.button} onPress={handleLogin}>
-              Login
-            </Text>
-          </View>
+
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -91,25 +85,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#000000',
     textAlign: 'center',
     marginBottom: 8,
-    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 18,
-    color: '#666666',
+    color: '#666',
     textAlign: 'center',
     marginBottom: 50,
-    fontWeight: '400',
   },
   form: {
     width: '100%',
   },
   label: {
     fontSize: 16,
-    color: '#000000',
-    marginBottom: 10,
+    marginBottom: 8,
     fontWeight: '600',
   },
   input: {
@@ -118,38 +108,25 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: '#000000',
     backgroundColor: '#FFFFFF',
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
   },
-  buttonContainer: {
-    marginTop: 20,
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontSize: 14,
   },
   button: {
     backgroundColor: '#6A4CE1',
-    color: '#FFFFFF',
     padding: 18,
     borderRadius: 12,
-    textAlign: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '700',
-    overflow: 'hidden',
-    shadowColor: '#6A4CE1',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
   },
 });
 
