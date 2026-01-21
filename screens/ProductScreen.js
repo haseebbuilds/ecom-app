@@ -13,11 +13,10 @@ const ProductScreen = ({ addToCart, navigateToHome, navigateToCart, cartCount, s
     { id: 1, name: 'Smartphone Pro Max', price: 899.99, category: 'Mobiles' },
     { id: 2, name: 'Wireless Earbuds', price: 79.99, category: 'Accessories' },
     { id: 3, name: 'Laptop Ultra 15', price: 1299.99, category: 'Electronics' },
-    { id: 4, name: 'Smart Watch Series 8', price: 349.99, category: 'Electronics' },
-    { id: 5, name: 'Tablet Air 12', price: 599.99, category: 'Electronics' },
-    { id: 6, name: 'Wireless Charger', price: 29.99, category: 'Accessories' },
-    { id: 7, name: 'USB-C Cable Pack', price: 19.99, category: 'Accessories' },
-    { id: 8, name: 'Phone Case Premium', price: 39.99, category: 'Accessories' },
+    { id: 4, name: 'Tablet Air 12', price: 599.99, category: 'Electronics' },
+    { id: 5, name: 'Wireless Charger', price: 29.99, category: 'Accessories' },
+    { id: 6, name: 'USB-C Cable Pack', price: 19.99, category: 'Accessories' },
+    { id: 7, name: 'Phone Case Premium', price: 39.99, category: 'Accessories' },
   ]);
 
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery || '');

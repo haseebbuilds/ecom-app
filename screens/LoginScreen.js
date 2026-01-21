@@ -10,13 +10,31 @@ import {
 const LoginScreen = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 
   const handleLogin = () => {
-    // Dummy login - accepts any input
-    if (email.trim() !== '' || password.trim() !== '') {
-      onLogin();
-    }
-  };
+  if (!email.trim()) {
+    alert('Email is required');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    alert('Please enter a valid email address');
+    return;
+  }
+
+  if (!password.trim()) {
+    alert('Password is required');
+    return;
+  }
+
+  onLogin();
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -30,6 +48,7 @@ const LoginScreen = ({ onLogin }) => {
             style={styles.input}
             placeholder="Enter your email"
             placeholderTextColor="#999999"
+            name="email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
